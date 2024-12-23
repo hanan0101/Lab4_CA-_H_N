@@ -1,0 +1,17 @@
+.data 
+msg: .asciiz"Equal" #if x==y then print this msg
+msg1:.asciiz"Not Equal" # else print this msg
+
+.text
+main:
+li x22,5 # x=5
+li x23,10 #y=10
+bne x22,x23, Else
+la a1,msg
+
+Else:
+la a1,msg1
+end:
+li a0 4
+ecall
+
