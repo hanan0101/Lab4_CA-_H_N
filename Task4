@@ -1,0 +1,31 @@
+.text
+.globl main
+
+main:
+    # Load initial values into registers
+    li a2, 5             # Load first number (a)
+    li a3, 6             # Load second number (b)
+    li a4, 0             # Initialize result to 0
+
+while_loop:
+    bge x0, a3, end      # If b (a3) is 0, exit the loop
+    
+    andi t0, a3, 1       # b & 1 (check if b is odd)
+    beq x0, t0, shift    # If b is even, go to shift section
+
+    add a4, a4, a2       # Add a to result if b is odd
+
+shift:
+    slli a2, a2, 1       # Shift a left (a * 2)
+    srli a3, a3, 1       # Shift b right (b / 2)
+
+    jal ra  while_loop   # Repeat the loop
+
+end:
+    mv a1, a4            # Move the result to a0 for printing
+    li a0, 1             # System call for printing an integer (1)
+    ecall                # Print the result
+
+    # Exit the program
+    li a0, 10            # System call for exit
+    ecall                # Exit the program
