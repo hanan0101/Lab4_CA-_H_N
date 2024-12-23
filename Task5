@@ -1,0 +1,51 @@
+.data 
+rows: .byte 5          # Number of rows 
+space: .byte ' '       # ASCII for space
+star: .byte '*'        # ASCII for *
+newline: .byte 10      # ASCII for new line 
+
+.text
+.globl main
+main:
+    lb a2, rows         # load rows on a2
+    li t0, 0            # t0 = 0 
+
+rows_loop:
+    bge t0, a2, exit    # if row <= t0 exit   
+
+    li t1, 0            # space = 0 
+    sub t2, a2, t0      # t2 = rows - t0 
+    addi t2, t2, -1     # Adjust for proper alignment
+
+space_loop:
+    bge t1, t2, stars_loop  # if t1 >= t2 go to stars_loop
+    li a0, 11           # call system for print character 
+    lb a1, space        # load space 
+    ecall               
+    addi t1, t1, 1    
+    j space_loop        
+
+stars_loop:
+    li t3, 0            # j = 0 (number of stars)
+    li t4, 0            # number of stars needed
+    slli t4, t0, 1      # calculate number of stars (2*i)
+    addi t4, t4, 1      # adjust to (2*i + 1)
+
+print_star:
+    bge t3, t4, newline_loop # if stars printed >= stars needed, go to newline_loop
+    li a0, 11           # call system for print character
+    lb a1, star         # load star character
+    ecall               # print star
+    addi t3, t3, 1      # increment star count
+    j print_star        # return to star loop
+
+newline_loop:
+    li a0, 11           # call system for print character
+    lb a1, newline      # load newline character
+    ecall               # print newline
+    addi t0, t0, 1      # increment row counter
+    j rows_loop         # return to row loop
+
+exit:
+    li a0, 10           # call system for exit
+    ecall               # exit program
